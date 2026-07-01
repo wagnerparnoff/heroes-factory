@@ -1,6 +1,6 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
+  // Visit https://aka.ms/tsconfig to read more about this file
     // File Layout
     "rootDir": ".",
     "outDir": "dist",
@@ -40,7 +40,9 @@
     "moduleDetection": "force",
     "skipLibCheck": true,
 
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "allowImportingTsExtensions": true,
+    "noEmit": true
   },
 
 	"include": [
@@ -50,6 +52,5 @@
 	],
 	"exclude": [
 		"dist"
-	],
-  "allowImportingTsExtensions": true
+	]
 }
