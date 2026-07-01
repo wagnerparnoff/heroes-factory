@@ -2,17 +2,16 @@
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
     // File Layout
-    "rootDir": "src",
+    "rootDir": ".",
     "outDir": "dist",
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
     "module": "NodeNext",
     "target": "es2020",
-    "types": [],
     // For nodejs:
     // "lib": ["esnext"],
-    // "types": ["node"],
+    "types": ["node"],
     // and npm install -D @types/node
 
     // Other Outputs
@@ -42,5 +41,14 @@
     "skipLibCheck": true,
 
     "esModuleInterop": true
-  }
+  },
+
+	"include": [
+		"src/**/*.ts",
+    "test/**/*.spec.ts",
+    "prisma/**/*.ts"
+	],
+	"exclude": [
+		"dist"
+	]
 }
