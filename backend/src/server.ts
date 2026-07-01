@@ -9,6 +9,8 @@ app.get('/', (req, res) => {
   res.send('Hello World!');
 });
 
+console.log(process.env.DATABASE_URL);
+
 //start server
 const PORT = process.env.PORT ?? 3333;
 app.listen(PORT, () => {
