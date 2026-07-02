@@ -11,7 +11,7 @@ export class HeroService {
     async update(id: string, data: UpdateHeroInput) {
         const hero = await this.repository.findById(id);
         if(!hero) throw new AppError(404, "Herói nao encontrado");
-        if(!hero.isActive) throw new AppError(400, "Herói é possível editar um herói desativado");
+        if(!hero.isActive) throw new AppError(409, "Não é possível editar um herói desativado");
         return this.repository.update(id, data);
     }
 

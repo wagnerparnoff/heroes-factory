@@ -1,0 +1,12 @@
+# docker-compose.test.yml
+services:
+  mysql-test:
+    image: mysql:8.0
+    container_name: hero-factory-mysql-test
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: hero_factory_test
+    ports:
+      - "3307:3306"
+    tmpfs:
+      - /var/lib/mysql
