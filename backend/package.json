@@ -8,7 +8,7 @@
     "build": "tsc",
     "start": "node dist/src/index.js",
     "lint": "eslint src --ext .ts",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "seed:heroes": "node prisma/seed.ts"
   },
   "keywords": [],
@@ -26,11 +26,16 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
     "@types/node": "^26.0.1",
+    "@types/supertest": "^7.2.0",
     "eslint": "^10.6.0",
     "eslint-config-prettier": "^10.1.8",
+    "jest": "^30.4.2",
     "prettier": "^3.9.4",
     "prisma": "^7.8.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.11",
     "tsx": "^4.22.4",
     "typescript": "^6.0.3"
   }
