@@ -1,2 +1,14 @@
 import { PrismaClient } from '@prisma/client';
-export const prisma = new PrismaClient();
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import mariadb from 'mariadb';
+import 'dotenv/config';
+
+const connectionString = process.env.DATABASE_URL;
+
+if (!connectionString) {
+  throw new Error('DATABASE_URL environment variable is not defined');
+}
+
+const adapter = new PrismaMariaDb(connectionString);
+
+export const prisma = new PrismaClient({ adapter });

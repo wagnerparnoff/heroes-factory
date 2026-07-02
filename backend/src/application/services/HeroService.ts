@@ -21,7 +21,7 @@ export class HeroService {
         return this.repository.setActive(id, isActive);
     }
 
-    async finById(id: string) {
+    async findById(id: string) {
         const hero = await this.repository.findById(id);
         if(!hero) throw new AppError(404, "Herói nao encontrado");
         return hero;
