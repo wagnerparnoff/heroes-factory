@@ -18,7 +18,7 @@ export const heroApi = {
     return data;
   },
 
-  create: async (payload: Omit<Hero, "id" | "is_active" | "created_at" | "updated_at">): Promise<Hero> => {
+  create: async (payload: Omit<Hero, "id" | "isActive" | "createdAt" | "updatedAt">): Promise<Hero> => {
     const { data } = await httpClient.post("/heroes", payload);
     return data;
   },
