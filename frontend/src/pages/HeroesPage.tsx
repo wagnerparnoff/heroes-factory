@@ -13,6 +13,13 @@ import { IconSearch } from "@tabler/icons-react";
 
 import { useDisclosure } from "@mantine/hooks";
 import { HeroFormModal } from "../components/HeroFormModal";
+import { HeroDetailModal } from "../components/HeroDetailModal";
+import type { Hero } from "../types/Hero";
+
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { notifications } from "@mantine/notifications";
+import { ConfirmModal } from "../components/ConfirmModal";
+import { heroApi} from "../api/heroApi";
 
 export function HeroesPage() {
   const [page, setPage] = useState(1);
@@ -20,6 +27,30 @@ export function HeroesPage() {
   const [debouncedSearch] = useDebouncedValue(search, 300);
   const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const { data, isLoading, isError, error } = useHeroes(page, debouncedSearch);
+  const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
+  const [editHero, setEditHero] = useState<Hero | null>(null);
+  //para os modais de confirmacao
+  const [deactivateTarget, setDeactivateTarget] = useState<Hero | null>(null);
+  const [activateTarget, setActivateTarget]     = useState<Hero | null>(null);
+
+  const queryClient = useQueryClient();
+
+  const toggleActiveMutation = useMutation({
+    mutationFn: ({ id, active }: { id: string; active: boolean }) =>
+      heroApi.setActive(id, active),
+    onSuccess: (_, { active }) => {
+      queryClient.invalidateQueries({ queryKey: ["heroes"] });
+      notifications.show({
+        color: active ? "green" : "orange",
+        message: active ? "Herói ativado!" : "Herói desativado!",
+      });
+      setDeactivateTarget(null);
+      setActivateTarget(null);
+    },
+    onError: (error: Error) => {
+      notifications.show({ color: "red", title: "Erro", message: error.message });
+    },
+  });
 
   const totalPages = data ? Math.ceil(data.total / data.limit) : 1;
 
@@ -31,7 +62,34 @@ export function HeroesPage() {
 
   return (
     <Container size="xl" py="xl">
-      <HeroFormModal opened={createOpened} onClose={closeCreate} />
+      <HeroFormModal
+        opened={createOpened || !!editHero}
+        onClose={() => {
+          closeCreate();
+          setEditHero(null);
+        }}
+        hero={editHero ?? undefined}
+      />
+      <HeroDetailModal hero={selectedHero} onClose={() => setSelectedHero(null)} />
+      <ConfirmModal
+        opened={!!deactivateTarget}
+        title="Excluir herói"
+        message={`Deseja desativar ${deactivateTarget?.nickname}?`}
+        confirmLabel="Desativar"
+        loading={toggleActiveMutation.isPending}
+        onConfirm={() => toggleActiveMutation.mutate({ id: deactivateTarget!.id, active: false })}
+        onClose={() => setDeactivateTarget(null)}
+      />
+      <ConfirmModal
+        opened={!!activateTarget}
+        title="Ativar herói"
+        message={`Deseja reativar ${activateTarget?.nickname}?`}
+        confirmLabel="Ativar"
+        confirmColor="green"
+        loading={toggleActiveMutation.isPending}
+        onConfirm={() => toggleActiveMutation.mutate({ id: activateTarget!.id, active: true })}
+        onClose={() => setActivateTarget(null)}
+      />
       <Stack gap="lg">
         <Title order={1}>Hero Factory</Title>
 
@@ -66,7 +124,10 @@ export function HeroesPage() {
               <HeroCard
                 key={hero.id}
                 hero={hero}
-                onClick={() => console.log("abrir detalhe", hero.id)}
+                onClick={() => setSelectedHero(hero)}
+                onEdit={() => setEditHero(hero)}
+                onDeactivate={() => setDeactivateTarget(hero)}
+                onActivate={() => setActivateTarget(hero)}
               />
             ))}
           </SimpleGrid>

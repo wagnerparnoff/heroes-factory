@@ -1,4 +1,5 @@
 import { Modal, TextInput, Button, Stack, Group } from "@mantine/core";
+import { useEffect } from "react";
 import { DateInput } from "@mantine/dates";
 import { useForm } from "@mantine/form";
 import { zodResolver } from "mantine-form-zod-resolver";
@@ -22,14 +23,31 @@ export function HeroFormModal({ opened, onClose, hero }: HeroFormModalProps) {
   const form = useForm<HeroFormValues>({
     validate: zodResolver(heroFormSchema),
     initialValues: {
-      name:        hero?.name        ?? "",
-      nickname:    hero?.nickname    ?? "",
-      dateOfBirth: hero ? new Date(hero.dateOfBirth) : new Date(),
-      universe:    hero?.universe    ?? "",
-      mainPower:   hero?.mainPower  ?? "",
-      avatarUrl:   hero?.avatarUrl  ?? "",
+      name:        "",
+      nickname:    "",
+      dateOfBirth: new Date(),
+      universe:    "",
+      mainPower:   "",
+      avatarUrl:   "",
     },
   });
+
+  useEffect(() => {
+    if (opened) {
+      if (hero) {
+        form.setValues({
+          name:        hero.name,
+          nickname:    hero.nickname,
+          dateOfBirth: new Date(hero.dateOfBirth),
+          universe:    hero.universe,
+          mainPower:   hero.mainPower,
+          avatarUrl:   hero.avatarUrl ?? "",
+        });
+      } else {
+        form.reset();
+      }
+    }
+  }, [opened, hero]);
 
   const mutation = useMutation({
     mutationFn: (values: HeroFormValues) => {
