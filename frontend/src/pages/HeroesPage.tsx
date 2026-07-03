@@ -11,10 +11,14 @@ import { useDebouncedValue } from "@mantine/hooks";
 import { TextInput } from "@mantine/core";
 import { IconSearch } from "@tabler/icons-react";
 
+import { useDisclosure } from "@mantine/hooks";
+import { HeroFormModal } from "../components/HeroFormModal";
+
 export function HeroesPage() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebouncedValue(search, 300);
+  const [createOpened, { open: openCreate, close: closeCreate }] = useDisclosure(false);
   const { data, isLoading, isError, error } = useHeroes(page, debouncedSearch);
 
   const totalPages = data ? Math.ceil(data.total / data.limit) : 1;
@@ -27,10 +31,11 @@ export function HeroesPage() {
 
   return (
     <Container size="xl" py="xl">
+      <HeroFormModal opened={createOpened} onClose={closeCreate} />
       <Stack gap="lg">
         <Title order={1}>Hero Factory</Title>
 
-        <Button leftSection={<IconPlus size={16} />} w="fit-content">
+        <Button leftSection={<IconPlus size={16} />} w="fit-content" onClick={openCreate}>
           Novo Herói
         </Button>
 
