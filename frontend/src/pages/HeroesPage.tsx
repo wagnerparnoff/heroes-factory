@@ -7,11 +7,23 @@ import { IconPlus, IconAlertCircle } from "@tabler/icons-react";
 import { useHeroes } from "../hooks/useHeroes";
 import { HeroCard } from "../components/HeroCard";
 
+import { useDebouncedValue } from "@mantine/hooks";
+import { TextInput } from "@mantine/core";
+import { IconSearch } from "@tabler/icons-react";
+
 export function HeroesPage() {
   const [page, setPage] = useState(1);
-  const { data, isLoading, isError, error } = useHeroes(page, "");
+  const [search, setSearch] = useState("");
+  const [debouncedSearch] = useDebouncedValue(search, 300);
+  const { data, isLoading, isError, error } = useHeroes(page, debouncedSearch);
 
   const totalPages = data ? Math.ceil(data.total / data.limit) : 1;
+
+  //aqui reseto para pagina1 depois de pesquisa
+  const handleSearch = (value: string) => {
+    setSearch(value);
+    setPage(1);
+  };
 
   return (
     <Container size="xl" py="xl">
@@ -21,6 +33,13 @@ export function HeroesPage() {
         <Button leftSection={<IconPlus size={16} />} w="fit-content">
           Novo Herói
         </Button>
+
+        <TextInput
+          placeholder="Buscar por nome ou codinome..."
+          leftSection={<IconSearch size={16} />}
+          value={search}
+          onChange={(e) => handleSearch(e.currentTarget.value)}
+        />
 
         {isLoading && (
           <SimpleGrid cols={5} spacing="md">
