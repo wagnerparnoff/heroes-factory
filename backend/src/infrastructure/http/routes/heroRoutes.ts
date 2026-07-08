@@ -16,5 +16,6 @@ router.get("/heroes/:id", heroController.getById);
 router.put("/heroes/:id", heroController.update);
 router.patch("/heroes/:id/activate", heroController.activate);
 router.patch("/heroes/:id/deactivate",heroController.deactivate);
+router.delete("/heroes/:id", heroController.delete);
 
 export default router;

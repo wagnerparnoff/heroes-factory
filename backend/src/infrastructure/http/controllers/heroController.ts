@@ -17,6 +17,7 @@ export class HeroController {
     this.update     = this.update.bind(this);
     this.activate   = this.activate.bind(this);
     this.deactivate = this.deactivate.bind(this);
+    this.delete     = this.delete.bind(this);
   }
 
   async create(req: Request, res: Response, next: NextFunction) {
@@ -76,6 +77,15 @@ export class HeroController {
     try {
       const hero = await this.heroService.setActive(req.params.id as string, false);
       return res.json(toHeroResponse(hero));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async delete(req: Request, res: Response, next: NextFunction) {
+    try {
+      await this.heroService.delete(req.params.id as string);
+      return res.status(204).send();
     } catch (err) {
       next(err);
     }

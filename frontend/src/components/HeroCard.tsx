@@ -1,5 +1,5 @@
 import { Card, Image, Text, Badge, Stack, Menu, ActionIcon } from "@mantine/core";
-import { IconDots, IconEdit, IconTrash, IconPlayerPlay } from "@tabler/icons-react";
+import { IconDots, IconEdit, IconTrash, IconPlayerPlay, IconPlayerPause } from "@tabler/icons-react";
 
 import type { Hero } from "../types/Hero";
 
@@ -9,9 +9,10 @@ interface HeroCardProps {
   onEdit: () => void;
   onDeactivate: () => void;
   onActivate: () => void;
+  onDelete: () => void;
 }
 
-export function HeroCard({ hero, onClick, onEdit, onDeactivate, onActivate }: HeroCardProps) {
+export function HeroCard({ hero, onClick, onEdit, onDeactivate, onActivate, onDelete }: HeroCardProps) {
   return (
     <Card
       shadow="sm"
@@ -36,15 +37,19 @@ export function HeroCard({ hero, onClick, onEdit, onDeactivate, onActivate }: He
             </Menu.Target>
             <Menu.Dropdown>
               {hero.isActive && (
-                <Menu.Item leftSection={<IconEdit size={14} />} onClick={onEdit}>
-                  Editar
-                </Menu.Item>
+                <>
+                  <Menu.Item leftSection={<IconEdit size={14} />} onClick={onEdit}>
+                    Editar
+                  </Menu.Item>
+                  <Menu.Item color="orange" leftSection={<IconPlayerPause size={14} />} onClick={onDeactivate}>
+                    Inativar
+                  </Menu.Item>
+                  <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={onDelete}>
+                    Excluir
+                  </Menu.Item>
+                </>
               )}
-              {hero.isActive ? (
-                <Menu.Item color="red" leftSection={<IconTrash size={14} />} onClick={onDeactivate}>
-                  Excluir
-                </Menu.Item>
-              ) : (
+              {!hero.isActive && (
                 <Menu.Item color="green" leftSection={<IconPlayerPlay size={14} />} onClick={onActivate}>
                   Ativar
                 </Menu.Item>

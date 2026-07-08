@@ -22,4 +22,5 @@ export interface IHeroRepository {
     findAll(filters: ListHeroesFilters): Promise<PaginatedResult<Hero>>;
     update(id: string, data: UpdateHeroInput): Promise<Hero>;
     setActive(id: string, isActive: boolean): Promise<Hero>;
+    delete(id: string): Promise<void>;
 }

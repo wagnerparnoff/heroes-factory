@@ -32,6 +32,7 @@ export function HeroesPage() {
   //para os modais de confirmacao
   const [deactivateTarget, setDeactivateTarget] = useState<Hero | null>(null);
   const [activateTarget, setActivateTarget]     = useState<Hero | null>(null);
+  const [deleteTarget, setDeleteTarget]         = useState<Hero | null>(null);
 
   const queryClient = useQueryClient();
 
@@ -49,6 +50,21 @@ export function HeroesPage() {
     },
     onError: (error: Error) => {
       notifications.show({ color: "red", title: "Erro", message: error.message });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: string) => heroApi.delete(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["heroes"] });
+      notifications.show({
+        color: "green",
+        message: "Herói excluído da base!",
+      });
+      setDeleteTarget(null);
+    },
+    onError: (error: Error) => {
+      notifications.show({ color: "red", title: "Erro ao excluir", message: error.message });
     },
   });
 
@@ -73,9 +89,10 @@ export function HeroesPage() {
       <HeroDetailModal hero={selectedHero} onClose={() => setSelectedHero(null)} />
       <ConfirmModal
         opened={!!deactivateTarget}
-        title="Excluir herói"
-        message={`Deseja desativar ${deactivateTarget?.nickname}?`}
-        confirmLabel="Desativar"
+        title="Inativar herói"
+        message={`Deseja inativar ${deactivateTarget?.nickname}?`}
+        confirmLabel="Inativar"
+        confirmColor="orange"
         loading={toggleActiveMutation.isPending}
         onConfirm={() => toggleActiveMutation.mutate({ id: deactivateTarget!.id, active: false })}
         onClose={() => setDeactivateTarget(null)}
@@ -89,6 +106,16 @@ export function HeroesPage() {
         loading={toggleActiveMutation.isPending}
         onConfirm={() => toggleActiveMutation.mutate({ id: activateTarget!.id, active: true })}
         onClose={() => setActivateTarget(null)}
+      />
+      <ConfirmModal
+        opened={!!deleteTarget}
+        title="Excluir herói"
+        message={`Tem certeza que deseja excluir DEFINITIVAMENTE ${deleteTarget?.nickname} da base? Esta ação não pode ser desfeita.`}
+        confirmLabel="Excluir"
+        confirmColor="red"
+        loading={deleteMutation.isPending}
+        onConfirm={() => deleteMutation.mutate(deleteTarget!.id)}
+        onClose={() => setDeleteTarget(null)}
       />
       <Stack gap="lg">
         <Title order={1}>Hero Factory</Title>
@@ -128,6 +155,7 @@ export function HeroesPage() {
                 onEdit={() => setEditHero(hero)}
                 onDeactivate={() => setDeactivateTarget(hero)}
                 onActivate={() => setActivateTarget(hero)}
+                onDelete={() => setDeleteTarget(hero)}
               />
             ))}
           </SimpleGrid>

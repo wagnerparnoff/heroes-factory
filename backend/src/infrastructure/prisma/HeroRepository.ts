@@ -41,5 +41,8 @@ export class HeroRepository implements IHeroRepository {
     async setActive(id: string, isActive: boolean) {
         return prisma.hero.update({ where: { id }, data: { isActive } });
     }
-    
+
+    async delete(id: string): Promise<void> {
+        await prisma.hero.delete({ where: { id } });
+    }
 }

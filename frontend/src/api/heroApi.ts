@@ -33,4 +33,8 @@ export const heroApi = {
     const { data } = await httpClient.patch(`/heroes/${id}/${endpoint}`);
     return data;
   },
+
+  delete: async (id: string): Promise<void> => {
+    await httpClient.delete(`/heroes/${id}`);
+  },
 };

@@ -9,7 +9,8 @@
     "start": "node dist/src/index.js",
     "lint": "eslint src --ext .ts",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
-    "seed:heroes": "tsx prisma/seed.ts"
+    "seed:heroes": "tsx prisma/seed.ts",
+    "docker:dev": "npx prisma generate && npx prisma migrate deploy && tsx watch src/index.ts"
   },
   "keywords": [],
   "author": "",
